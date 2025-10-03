@@ -1,0 +1,201 @@
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>Qur'an-Yuk made by Ridho R.A</title>  
+  <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="icon" type="logo/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="logo/png" sizes="16x16" href="logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
+  <style>  
+    body {  
+      font-family: 'Segoe UI', sans-serif;  
+      background: #0f3d2e;  
+      color: #fff;  
+      margin: 0;  
+      padding: 0;  
+    }  
+    header {  
+      text-align: center;  
+      padding: 30px 15px;  
+      background: linear-gradient(145deg, #145a3b, #0d3326);  
+      border-bottom: 3px solid gold;  
+    }  
+    header h1 {  
+      margin: 0;  
+      font-size: 30px;  
+      color: gold;  
+    }  
+    header p {  
+      margin: 10px 0 0;  
+      font-size: 15px;  
+      color: #ddd;  
+    }  
+        /* Tombol kembali */  
+    .back-btn {  
+      position: absolute;  
+      top: 15px;  
+      left: 15px;  
+      font-size: 22px;  
+      color: gold;  
+      background: none;  
+      border: none;  
+      cursor: pointer;  
+    }  
+    .back-btn:hover {  
+      color: #fff;  
+    }  
+    .search-box {  
+      display: flex;  
+      justify-content: center;  
+      margin-top: 20px;  
+    }  
+    .search-box input {  
+      width: 90%;  
+      max-width: 450px;  
+      padding: 12px 18px;  
+      border-radius: 25px;  
+      border: none;  
+      outline: none;  
+      font-size: 16px;  
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);  
+    }  
+    .container {  
+      padding: 20px;  
+    }  
+    .surat {  
+      background: #145a3b;  
+      margin: 12px 0;  
+      padding: 15px 20px;  
+      border-radius: 12px;  
+      cursor: pointer;  
+      transition: 0.25s;  
+      border-left: 5px solid gold;  
+    }  
+    .surat:hover {  
+      background: #1b7a55;  
+      transform: translateX(5px);  
+    }  
+    .surat b {  
+      font-size: 18px;  
+      color: #fff;  
+    }  
+    .surat span {  
+      display: block;  
+      color: #ccc;  
+      font-size: 14px;  
+      margin-top: 5px;  
+    }  
+    footer {  
+      text-align: center;  
+      padding: 18px;  
+      background: #145a3b;  
+      border-top: 2px solid gold;  
+      color: #ccc;  
+      font-size: 14px;  
+      margin-top: 20px;  
+    }  
+
+    /* Tombol Scroll Up */
+    #scrollUpBtn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 45px;
+      height: 45px;
+      background: gold;
+      color: #0f3d2e;
+      border: none;
+      border-radius: 50%;
+      font-size: 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: 0.3s;
+      z-index: 100;
+    }
+    #scrollUpBtn:hover {
+      background: #ffd700;
+      transform: scale(1.1);
+    }
+  </style>  
+</head>  
+<body>  
+  <header>  
+    <!-- Tombol kembali -->  
+    <button class="back-btn" onclick="window.location.href='index.html'">  
+      <i class="fa-solid fa-home"></i>  
+    </button>  
+      
+    <h1>📖 Qur'an-Yuk</h1>  
+    <p>Membaca & Memahami Al-Qur’an</p>  
+    <div class="search-box">  
+      <input type="text" id="search" placeholder="🔎 Cari surat (nama / arti / nomor)...">  
+    </div>  
+  </header>  
+  
+  <div class="container">  
+    <div id="daftar-surat">Loading...</div>  
+  </div>  
+  
+  <footer>  
+    &copy; 2025 Qur'an-Yuk | <i class="fa-solid fa-mosque" style="color:gold;"></i> RRA Project  
+  </footer>  
+
+  <!-- Tombol Scroll Up -->  
+  <button onclick="scrollToTop()" id="scrollUpBtn" title="Kembali ke atas">  
+    <i class="fa-solid fa-arrow-up"></i>  
+  </button>  
+  
+  <script>  
+    let allSurat = [];  
+    async function loadSurat() {  
+      const res = await fetch("https://equran.id/api/v2/surat");  
+      const data = await res.json();  
+      allSurat = data.data;  
+      renderSurat(allSurat);  
+    }  
+  
+    function renderSurat(list) {  
+      const container = document.getElementById("daftar-surat");  
+      container.innerHTML = "";  
+      list.forEach(s => {  
+        const div = document.createElement("div");  
+        div.className = "surat";  
+        div.innerHTML = `<b>${s.nomor}. ${s.namaLatin}</b> <span>${s.arti} – ${s.jumlahAyat} ayat</span>`;  
+        div.onclick = () => { window.location.href = `surat.html?id=${s.nomor}`; };  
+        container.appendChild(div);  
+      });  
+    }  
+  
+    document.getElementById("search").addEventListener("keyup", (e) => {  
+      const q = e.target.value.toLowerCase();  
+      const filtered = allSurat.filter(s =>  
+        s.namaLatin.toLowerCase().includes(q) ||  
+        s.arti.toLowerCase().includes(q) ||  
+        s.nomor.toString().includes(q)  
+      );  
+      renderSurat(filtered);  
+    });  
+  
+    loadSurat();  
+
+    // Tombol scroll up muncul saat scroll ke bawah  
+    const scrollBtn = document.getElementById("scrollUpBtn");  
+    window.onscroll = function() {  
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {  
+        scrollBtn.style.display = "block";  
+      } else {  
+        scrollBtn.style.display = "none";  
+      }  
+    };  
+
+    function scrollToTop() {  
+      window.scrollTo({top: 0, behavior: 'smooth'});  
+    }  
+  </script>  
+</body>  
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Sholat - Qur’an-Yuk</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="icon" type="logo/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="logo/png" sizes="16x16" href="logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1d3d29, #2a5c3c);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+        /* Ornamen bulan sabit besar */
+    body::before {
+      content: "\f186"; /* fa-moon */
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: 150px;
+      color: rgba(255, 215, 0, 0.1); /* emas transparan */
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      transform: rotate(-20deg);
+      z-index: 0;
+    }
+
+    /* Ornamen bintang */
+    body::after {
+      content: "\f005"; /* fa-star */
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: 100px;
+      color: rgba(255, 215, 0, 0.08);
+      position: absolute;
+      bottom: 15%;
+      right: 12%;
+      z-index: 0;
+    }
+
+    /* Pernak-pernik bintang kecil */
+    .stars i {
+      position: absolute;
+      color: rgba(255, 215, 0, 0.07);
+      font-size: 20px;
+      animation: twinkle 4s infinite alternate;
+    }
+
+    .stars i:nth-child(1) { top: 20%; left: 70%; font-size: 25px; animation-delay: 1s; }
+    .stars i:nth-child(2) { top: 40%; left: 80%; font-size: 15px; animation-delay: 2s; }
+    .stars i:nth-child(3) { top: 60%; left: 25%; font-size: 18px; animation-delay: 3s; }
+    .stars i:nth-child(4) { top: 75%; left: 50%; font-size: 22px; animation-delay: 0.5s; }
+    .stars i:nth-child(5) { top: 30%; left: 15%; font-size: 17px; animation-delay: 1.5s; }
+
+    @keyframes twinkle {
+      from { opacity: 0.2; transform: scale(0.9); }
+      to { opacity: 0.6; transform: scale(1.1); }
+    }
+    .back-btn {
+      align-self: flex-start;
+      font-size: 20px;
+      color: gold;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+    .back-btn:hover { color: #fff; }
+
+    h1 {
+      margin: 10px 0 20px;
+      color: gold;
+    }
+
+    .kota-selector {
+      margin-bottom: 20px;
+    }
+    .kota-selector select {
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid gold;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .loading {
+      font-size: 16px;
+      color: gold;
+      margin: 10px 0;
+      animation: blink 1.2s infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0.4; }
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 500px;
+      background: #145a3b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background: gold;
+      color: #000;
+      font-size: 18px;
+    }
+    tr:nth-child(even) {
+      background: #1b4d35;
+    }
+    tr:nth-child(odd) {
+      background: #226344;
+    }
+
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 15px;
+      background: #145a3b;
+      border-top: 2px solid gold;
+      width: 100%;
+      color: #ccc;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-btn"><i class="fa-solid fa-home"></i></a>
+  <h1>🕌 Jadwal Sholat</h1>
+
+  <div class="kota-selector">
+    <label for="selectKota">Pilih Kota: </label>
+    <select id="selectKota" disabled>
+      <option>Loading...</option>
+    </select>
+    <div id="loadingText" class="loading">⏳ Mengambil daftar kota...</div>
+  </div>
+
+  <table id="jadwalTable">
+    <thead>
+      <tr><th>Sholat</th><th>Waktu</th></tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="2">Silakan pilih kota...</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    &copy; 2025 Qur'an-Yuk | <i class="fa-solid fa-mosque" style="color:gold;"></i> RRA Project
+  </footer>
+
+  <script>
+    const selectKota = document.getElementById('selectKota');
+    const tbodyJadwal = document.querySelector('#jadwalTable tbody');
+    const loadingText = document.getElementById('loadingText');
+
+    // Fetch daftar semua kota dari API MyQuran
+    async function fetchAllKota() {
+      try {
+        const res = await fetch("https://api.myquran.com/v2/sholat/kota/semua");
+        const obj = await res.json();
+        if (obj && obj.data) {
+          return obj.data;
+        }
+      } catch (err) {
+        console.error("Gagal fetch daftar kota:", err);
+      }
+      return [];
+    }
+
+    // Fetch jadwal sholat berdasarkan idKota
+    async function loadJadwal(idKota) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+
+      const url = `https://api.myquran.com/v2/sholat/jadwal/${idKota}/${yyyy}/${mm}/${dd}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data || !data.data || !data.data.jadwal) throw new Error("Format data salah");
+
+        const jadwal = data.data.jadwal;
+        tbodyJadwal.innerHTML = '';
+        const names = ['imsak','subuh','terbit','dzuhur','ashar','maghrib','isya'];
+        const labels = { 
+          imsak:'Imsak', subuh:'Subuh', terbit:'Terbit', 
+          dzuhur:'Dzuhur', ashar:'Ashar', 
+          maghrib:'Maghrib', isya:'Isya' 
+        };
+
+        names.forEach(key => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${labels[key]}</td><td>${jadwal[key]}</td>`;
+          tbodyJadwal.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Gagal load jadwal:", err);
+        tbodyJadwal.innerHTML = `<tr><td colspan="2">Jadwal tidak tersedia</td></tr>`;
+      }
+    }
+
+    // Inisialisasi dropdown kota + load jadwal default
+    async function initKotaDropdown() {
+      const kotaList = await fetchAllKota();
+      selectKota.innerHTML = '';
+      loadingText.style.display = "none"; // Hilangkan loading setelah selesai
+
+      if (kotaList.length === 0) {
+        selectKota.innerHTML = '<option>Gagal memuat kota</option>';
+        return;
+      }
+
+      kotaList.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k.id;
+        opt.textContent = k.lokasi;
+        selectKota.appendChild(opt);
+      });
+
+      selectKota.disabled = false; // aktifkan select
+      selectKota.value = kotaList[0].id;
+      loadJadwal(selectKota.value);
+    }
+
+    selectKota.addEventListener('change', () => {
+      loadJadwal(selectKota.value);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initKotaDropdown();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qur'an-Yuk made by Ridho R.A</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="icon" type="logo/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="logo/png" sizes="16x16" href="logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1d3d29, #2a5c3c);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ornamen bulan sabit besar */
+    body::before {
+      content: "\f186"; /* fa-moon */
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: 150px;
+      color: rgba(255, 215, 0, 0.1); /* emas transparan */
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      transform: rotate(-20deg);
+      z-index: 0;
+    }
+
+    /* Ornamen bintang */
+    body::after {
+      content: "\f005"; /* fa-star */
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: 100px;
+      color: rgba(255, 215, 0, 0.08);
+      position: absolute;
+      bottom: 15%;
+      right: 12%;
+      z-index: 0;
+    }
+
+    /* Pernak-pernik bintang kecil */
+    .stars i {
+      position: absolute;
+      color: rgba(255, 215, 0, 0.07);
+      font-size: 20px;
+      animation: twinkle 4s infinite alternate;
+    }
+
+    .stars i:nth-child(1) { top: 20%; left: 70%; font-size: 25px; animation-delay: 1s; }
+    .stars i:nth-child(2) { top: 40%; left: 80%; font-size: 15px; animation-delay: 2s; }
+    .stars i:nth-child(3) { top: 60%; left: 25%; font-size: 18px; animation-delay: 3s; }
+    .stars i:nth-child(4) { top: 75%; left: 50%; font-size: 22px; animation-delay: 0.5s; }
+    .stars i:nth-child(5) { top: 30%; left: 15%; font-size: 17px; animation-delay: 1.5s; }
+
+    @keyframes twinkle {
+      from { opacity: 0.2; transform: scale(0.9); }
+      to { opacity: 0.6; transform: scale(1.1); }
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: gold;
+      z-index: 1;
+    }
+
+    p {
+      font-size: 18px;
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      color: #ddd;
+      z-index: 1;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 15px 30px;
+      background: gold;
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: 0.3s;
+      z-index: 1;
+      position: relative;
+    }
+
+    .btn:hover {
+      background: #ffd700;
+      transform: scale(1.05);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 0px;
+      text-align: center;
+      background: #145a3b;
+      border-top: 2px solid gold;
+      padding-top: 1rem;
+      width: 100%;
+      color: #ccc;
+      font-size: 14px;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="stars">
+    <i class="fa-solid fa-star"></i>
+    <i class="fa-solid fa-star"></i>
+    <i class="fa-solid fa-star"></i>
+    <i class="fa-solid fa-star"></i>
+    <i class="fa-solid fa-star"></i>
+  </div>
+
+  <h1>📖 Selamat Datang di Qur’an-Yuk</h1>
+  <p>Website ini dibuat untuk membantu Anda membaca, mendengarkan, dan memahami Al-Qur’an dengan mudah secara online.</p>
+  <a href="quran.html" class="btn"><i class="fas fa-book"></i> Mulai Membaca</a>
+  <a href="jadwal.html" class="btn"><i class="fas fa-clock"></i> Jadwal Sholat</a>
+  <a href="asmaul.html" class="btn"><i class="fas fa-star-and-crescent"></i> Asmaul Husna</a>
+
+  <footer>
+    &copy; 2025 Qur'an-Yuk | <i class="fa-solid fa-mosque" style="color:gold;"></i> RRA Project
+  </footer>
+</body>
+</html>
